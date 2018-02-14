@@ -1,7 +1,7 @@
 Docker Image for OpenSlides
 ===========================
 
-Data is in volume `/var/lib/openslides`.
+Data is in volume `/data`.
 
 Export port `8000`.
 
