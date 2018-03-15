@@ -27,7 +27,5 @@ RUN pip3 install 'daphne<2'
 RUN adduser --system --disabled-login --disabled-password --home $OPENSLIDES_USER_DATA_PATH openslides
 WORKDIR $OPENSLIDES_USER_DATA_PATH
 
-CMD chown -R openslides . && sudo -Hu openslides openslides
-
 EXPOSE 8000
 VOLUME $OPENSLIDES_USER_DATA_PATH
