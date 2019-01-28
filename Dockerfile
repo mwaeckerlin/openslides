@@ -1,31 +1,22 @@
-FROM mwaeckerlin/ubuntu-base
-MAINTAINER mwaeckerlin
-
-ENV OPENSLIDES_USER_DATA_PATH "/data"
-
-#RUN apt-get update && apt-get install -y build-essential python3 python3-dev python3-pip python3-venv
-##RUN ln $(which pip3) /usr/bin/pip
-#RUN mkdir /openslides
-#WORKDIR /openslides
-#RUN python3 -m venv .virtualenv
-#RUN . .virtualenv/bin/activate && pip3 install --upgrade setuptools pip && pip install openslides
-#CMD . .virtualenv/bin/activate && openslides
-
-RUN apt-get update && apt-get install -y python3 python3-setuptools python3-dev gcc sudo
-ENV VERSION "2.1.1"
-ENV SOURCE "https://files.openslides.org/releases/${VERSION}/openslides-${VERSION}.tar.gz"
-RUN wget -qOopenslides-${VERSION}.tar.gz $SOURCE
-RUN tar xf openslides-${VERSION}.tar.gz
-WORKDIR openslides-${VERSION}
+FROM mwaeckerlin/base
+ENV VERSION                     "2.3"
+ENV SOURCE                      "https://files.openslides.org/releases/${VERSION}/openslides-${VERSION}.tar.gz"
+RUN apk add --no-cache --purge --clean-protected -u python3 python3-dev gcc libc-dev
+WORKDIR /tmp
+RUN wget -qO- $SOURCE | tar xz
+WORKDIR /tmp/openslides-${VERSION}
 RUN python3 setup.py install
 
-# bugfix for https://github.com/OpenSlides/OpenSlides/issues/3574#issuecomment-364559454
-RUN apt-get install -y python3-pip
-RUN pip3 install --upgrade pip
-RUN pip3 install 'daphne<2'
+FROM mwaeckerlin/base
+ENV PYTHONVER                   "3.6"
+ENV OPENSLIDES_USER_DATA_PATH   "/data"
+ENV CONTAINER                   "openslides"
+RUN apk add --no-cache --purge --clean-protected -u python3
+COPY --from=0 /usr/bin/openslides /usr/bin/openslides
+COPY --from=0 /usr/lib/python${PYTHONVER} /usr/lib/python${PYTHONVER}
 
-RUN adduser --system --disabled-login --disabled-password --home $OPENSLIDES_USER_DATA_PATH openslides
-WORKDIR $OPENSLIDES_USER_DATA_PATH
+USER ${RUN_USER}
+WORKDIR ${OPENSLIDES_USER_DATA_PATH}
 
 EXPOSE 8000
 VOLUME $OPENSLIDES_USER_DATA_PATH

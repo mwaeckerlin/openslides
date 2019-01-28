@@ -1,4 +1,3 @@
-#! /bin/bash -e
+#! /bin/sh -e
 
-chown -R openslides .
-sudo -Hu openslides openslides
+openslides
