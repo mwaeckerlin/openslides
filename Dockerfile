@@ -9,14 +9,13 @@ RUN python3 setup.py install
 
 FROM mwaeckerlin/base
 ENV PYTHONVER                   "3.6"
-ENV OPENSLIDES_USER_DATA_PATH   "/data"
 ENV CONTAINER                   "openslides"
 RUN apk add --no-cache --purge --clean-protected -u python3
 COPY --from=0 /usr/bin/openslides /usr/bin/openslides
 COPY --from=0 /usr/lib/python${PYTHONVER} /usr/lib/python${PYTHONVER}
 
 USER ${RUN_USER}
-WORKDIR ${OPENSLIDES_USER_DATA_PATH}
+WORKDIR ${RUN_HOME}
 
 EXPOSE 8000
-VOLUME $OPENSLIDES_USER_DATA_PATH
+VOLUME ${RUN_HOME}
