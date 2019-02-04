@@ -3,7 +3,7 @@ RUN apk add --no-cache --purge --clean-protected -u python3 python3-dev gcc libc
 RUN pip3 install --compile --root /openslides openslides openslides-protocol
 
 FROM mwaeckerlin/base
-ENV CONTAINER                   "openslides"
+ENV CONTAINERNAME              "openslides"
 RUN apk add --no-cache --purge --clean-protected -u python3
 COPY --from=0 /openslides/usr /usr
 
